@@ -4,7 +4,7 @@
         <div class="border p-5 md:w-1/2 mx-4 bg-sec-100 my-12">
             <form method="POST" action="{{ route('addNewAdmin') }}" enctype="multipart/form-data">
                 @csrf
-
+ 
                 <div class="mb-6">
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name : </label>
                     <input type="text" id="name" name="name" value="{{ old('name') }}"

@@ -1,11 +1,22 @@
 @extends('layouts.myapp')
-@section('content')
-    <div class="mx-auto max-w-screen-xl bg-white rounded-md p-6 m-8">
-        <div class="flex justify-between md:flex-row flex-col">
-            {{-- -------------------------------------------- left -------------------------------------------- --}}
-            <div class="md:w-2/3  md:border-r border-gray-800 p-2">
+@section('create_reservation')
+    <div class="mx-auto max-w-screen-x2 ">
+        <div class="flex justify-between md:flex-row flex-col ">
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                <h2 class=" ms-4 max-w-full font-car md:text-6xl text-4xl">{{ $car->brand }} {{ $car->model }}
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+            {{-- -------------------------------------------- left -------------------------------------------- --}}
+            <div class="md:w-2/3  md:border-r border-gray-800 p-2 mt-8 ">
+
+                <h2 class=" ms-4 max-w-full font-car md:text-6xl text-4xl mt-24">{{ $car->brand }} {{ $car->model }}
                     {{ $car->engine }}
                 </h2>
 
@@ -29,11 +40,6 @@
                 </div>
 
                 <div class="px-6 md:me-8">
-
-                
-                   
-
-
                     <form action="{{ route('reservation.store', ['car_id' => $car->id]) }}" method="POST" enctype='multipart/form-data'>
 
                         @csrf
@@ -62,6 +68,58 @@
                                     <span class="text-red-500">{{ $message }}</span>
                                 @enderror
                             </div>
+                            {{-- Date de naissance --}}
+                            <div class="sm:col-span-3">
+                                <label for="date_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Date de naissance</label>
+                                <div class="mt-2">
+                                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ $client->date_of_birth }}"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
+                                </div>
+                                @error('date_of_birth')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            {{-- Champ pour Code --}}
+                            <div class="sm:col-span-3">
+                                <label for="code" class="block text-sm font-medium leading-6 text-gray-900">Code De Réservation</label>
+                                <div class="mt-2">
+                                    <input type="text" name="code" id="code" readonly
+                                        class="bg-gray-100 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+                            <script>
+                                function generateCode() {
+                                    const firstName = document.getElementById('first_name').value.trim().toLowerCase();
+                                    const lastName = document.getElementById('last_name').value.trim().toLowerCase();
+                                    const dob = document.getElementById('date_of_birth').value;
+
+                                    if (firstName && lastName && dob) {
+                                        const nomPart = firstName.substring(0, 3); // ex: "ach"
+                                        const prenomPart = lastName.substring(0, 4); // ex: "beny"
+                                        const datePart = dob.split('-').reverse().join('').substring(0, 6); // ex: "280698"
+
+                                        const code = nomPart + prenomPart + datePart;
+                                        document.getElementById('code').value = code;
+                                    }
+                                }
+
+                                document.getElementById('first_name').addEventListener('input', generateCode);
+                                document.getElementById('last_name').addEventListener('input', generateCode);
+                                document.getElementById('date_of_birth').addEventListener('input', generateCode);
+                                document.addEventListener('DOMContentLoaded', generateCode); // Call on page load to pre-fill
+                            </script>
+
+                            {{-- Lieu de naissance --}}
+                            <div class="sm:col-span-3">
+                                <label for="place_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Lieu de naissance</label>
+                                <div class="mt-2">
+                                    <input type="text" name="place_of_birth" id="place_of_birth" value="{{ $client->place_of_birth }}"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
+                                </div>
+                                @error('place_of_birth')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                             {{-- Champ pour Nationalité --}}
                             <div class="sm:col-span-full">
@@ -80,7 +138,7 @@
                                 <label for="identity_number" class="block text-sm font-medium leading-6 text-gray-900">Numéro de carte d'identité</label>
                                 <div class="mt-2">
                                     <input type="text" name="identity_number" id="identity_number" value="{{ $client->identity_number }}"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6" required>
                                 </div>
                                 @error('identity_number')
                                     <span class="text-red-500">{{ $message }}</span>
@@ -95,6 +153,7 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                             </div>
+
 
                             {{-- Driver's License Number --}}
                             <div class="sm:col-span-3">
@@ -117,6 +176,16 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                             </div>
+                            {{-- garanite --}}
+                            <div class="sm:col-span-3">
+                                <label for="garantie" class="block text-sm font-medium leading-6 text-gray-900">Garantie</label>
+                                <div class="mt-2">
+                                    <input type="text" name="garantie" id="garantie"
+                                        value=""
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
 
                             {{-- Address --}}
                             <div class="sm:col-span-6">
@@ -142,24 +211,305 @@
                                 @enderror
                             </div>
 
-                        
-                            {{-- Date Inputs --}}
-                            <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}"  style="display: none;">
-                    <input type="time" name="delivery_time"  id="delivery_time" value="{{ request('delivery_time') }}" style="display: none;" >
-                    <input type="date" name="end_date" id="end_date"value="{{ request('end_date') }}" style="display: none;" >
-                    <input type="time" name="return_time" id="return_time" value="{{ request('return_time') }}" style="display: none;" >
-                        
-                    </div>
-                        
+                            {{-- File Upload for ID Card and Driver License --}}
+                            <div class="sm:col-span-full">
+                                <label for="gallery" class="block text-sm font-medium leading-6 text-gray-900">Télécharger carte d'identité et permis de conduire (recto et verso)
+                                </label>
+                                <div class="mt-2">
+                                    <input 
+                                        type="file" 
+                                        name="gallery[]" 
+                                        id="gallery" 
+                                        accept="image/*" 
+                                        multiple
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
+                                    <small class="text-gray-500">Vous pouvez sélectionner le passeport.</small>
+                                </div>
+                                <div id="preview" class="mt-4 grid grid-cols-4 gap-4"></div>
+                                @error('gallery')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                                <div class="flex items-center space-x-4">
+                <label for="second_driver_toggle" class="text-sm text-gray-700 font-medium">
+                    Ajouter un 2ᵉ conducteur ?
+                </label>
+                <!-- Switch -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="second_driver_toggle" class="sr-only peer">
+                    <!-- Barre verte -->
+                    <div class="w-12 h-6 bg-green-300 rounded-full peer-checked:bg-green-600 transition-colors duration-300"></div>
+                    <!-- Rond blanc animé -->
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 peer-checked:translate-x-6"></div>
+                </label>
+        </div>
+        <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const toggle = document.getElementById('second_driver_toggle');
+                const form = document.getElementById('second-driver-form');
+                console.log('Toggle element:', toggle);
+                console.log('Form element:', form);
+                
+                if (toggle && form) {
+                    toggle.addEventListener('change', function() {
+                        console.log('Toggle changed, checked:', toggle.checked);
+                        if (toggle.checked) {
+                            form.style.display = 'block';
+                            console.log('Form should be visible now');
+                        } else {
+                            form.style.display = 'none';
+                            // Optionally clear fields if needed
+                            const driverForm = document.getElementById('driver-form');
+                            if (driverForm) driverForm.innerHTML = '';
+                            const cinInput = document.getElementById('second_driver_cin');
+                            if (cinInput) cinInput.value = '';
+                            console.log('Form hidden and cleared');
+                        }
+                    });
+                    // Hide by default
+                    form.style.display = 'none';
+                    console.log('Form hidden by default');
+                } else {
+                    console.error('Toggle or form element not found');
+                }
+            });
+        </script>
+      <script src="https://cdn.tailwindcss.com"></script>
+      
+    
+    
+<!-- Formulaire du 2ème conducteur caché initialement -->
+<div id="second-driver-form" style="display: none;">
+    
+
+    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+        <div class="flex-1">
+            <label for="second_driver_cin" class="block text-sm font-medium text-gray-700 mb-2">CIN du 2ème conducteur</label>
+            <input type="text" id="second_driver_cin" name="second_driver_cin" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                   placeholder="Entrez le numéro CIN">
+        </div>
+        <div class="flex-shrink-0">
+            <button type="button" 
+                    class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" 
+                    onclick="showForm()">
+                OK
+            </button>
+            <button type="button" 
+                    class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
+                    onclick="testShowForm()">
+                Test
+            </button>
+        </div>
+                                </div>
+                                <style>
+                                    #preview {
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        gap: 16px;
+                                        justify-content: center;
+                                    }
+                                    #preview img {
+                                        width: 150px;
+                                        height: 150px;
+                                        object-fit: cover;
+                                        border-radius: 8px;
+                                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                                    }
+                                    #preview img:hover {
+                                        transform: scale(1.05);
+                                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                                    }
+                                </style>
+                                <script>
+                                    const galleryInput = document.getElementById('gallery');
+                                    const previewDiv = document.getElementById('preview');
+                                    const form = document.querySelector('form');
+                                    const fields = [
+                                        'first_name',
+                                        'last_name',
+                                        'date_of_birth',
+                                        'place_of_birth',
+                                        'nationality',
+                                        'identity_number',
+                                        'identity_date',
+                                        'driver_license_number',
+                                        'license_date',
+                                        'address',
+                                        'mobile_number'
+                                    ];
+                                    galleryInput.addEventListener('change', function () {
+                                        previewDiv.innerHTML = "";
+                                        if (galleryInput.files.length < 3) {
+                                            alert("Vous devez sélectionner au moins 3 images.");
+                                            galleryInput.value = "";
+                                            return;
+                                        }
+                                        Array.from(galleryInput.files).forEach(file => {
+                                            const fileReader = new FileReader();
+                                            fileReader.onload = function(event) {
+                                                const imgElement = document.createElement('img');
+                                                imgElement.src = event.target.result;
+                                                imgElement.className = "max-w-xs max-h-32 mx-auto mb-2";
+                                                previewDiv.appendChild(imgElement);
+                                            };
+                                            fileReader.readAsDataURL(file);
+                                        });
+                                    });
+                                    form.addEventListener('submit', function (e) {
+                                        let errors = [];
+                                        if (galleryInput.files.length < 3) {
+                                            errors.push("Vous devez sélectionner au moins 3 images.");
+                                        }
+                                        fields.forEach(id => {
+                                            const input = document.getElementById(id);
+                                            if (!input || input.value.trim() === '') {
+                                                let label = id.replace(/_/g, ' ');
+                                                label = label.charAt(0).toUpperCase() + label.slice(1);
+                                                errors.push(`Le champ ${label} est obligatoire.`);
+                                            }
+                                        });
+                                        if (errors.length > 0) {
+                                            e.preventDefault();
+                                            alert(errors.join('\n'));
+                                        }
+                                    });
+                                </script>
+
+                                {{-- Date Inputs --}}
+                                <input type="hidden" name="start_date" id="start_date" value="{{ $start_date ?? request('start_date') }}">
+                                <input type="hidden" name="delivery_time"  id="delivery_time" value="{{ $delivery_time ?? request('delivery_time') }}">
+                                <input type="hidden" name="end_date" id="end_date" value="{{ $end_date ?? request('end_date') }}">
+                                <input type="hidden" name="return_time" id="return_time" value="{{ $return_time ?? request('return_time') }}">
+                            </div>
+                            <div id="additionalDrivers" class="mt-6"></div>
+                            <div class="pt-6">
+                                <div id="driver-form" class="mt-4"></div>
+                                <div id="additionalForm" class="hidden"></div>
+                                <div class="border border-gray-300 rounded-md p-4 mb-4 bg-gray-50">
+                                    <div id="additionalForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display:none;">
+                                        <div class="p-6 bg-white rounded-lg shadow-md">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div class="pt-6">
+                        <script>
+                            function showForm() {
+                                const cin = document.getElementById('second_driver_cin').value.trim();
+                                
+                                if (!cin) {
+                                    alert('Veuillez entrer un numéro CIN');
+                                    return;
+                                }
+
+                                fetch(`/check-cin/${cin}`)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error(`HTTP error! status: ${response.status}`);
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log('Response from server:', data);
+                                        let formHtml = '';
+                                        if (data.success) {
+                                            const client = data.client;
+
+                                            // Vérifier si des images sont disponibles dans le champ gallery
+                                            let imagesHtml = '';
+                                            if (client.gallery) {
+                                                try {
+                                                    const gallery = JSON.parse(client.gallery);
+                                                    if (gallery && gallery.length > 0) {
+                                                        imagesHtml = `
+                                                            <div class="flex flex-col">
+                                                                <label class="mb-1 font-medium text-green-600">Images de la carte d'identité et permis de conduire</label>
+                                                                <div class="flex space-x-4">
+                                                                    ${gallery.map(image => `<img src="${image}" alt="Image" class="w-20 h-20 object-cover border rounded-md" />`).join('')}
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    }
+                                                } catch (e) {
+                                                    console.log('Erreur parsing gallery:', e);
+                                                }
+                                            }
+                                            formHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-100 rounded-xl shadow-md text-gray-800"><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Nom</label><input type="text" name="last_name_conducteur" value="${client.last_name || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Prénom</label><input type="text" name="first_name_conducteur" value="${client.first_name || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Date de naissance</label><input type="text"name="date_of_birth_conducteur" value="${client.date_of_birth || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Lieu de naissance</label><input type="text" name="place_of_birth_conducteur" value="${client.place_of_birth || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Nationalité</label><input type="text" name="nationality_condcuteur" value="${client.nationality || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Num carte d'identité</label><input type="text" name="identity_number_conducteur" value="${client.identity_number || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Date d'identité</label><input type="text" name="identity_date_conducteur" value="${client.identity_date || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Numéro de permis</label><input type="text" name="driver_license_number_conducteur" value="${client.driver_license_number || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col"><label class="mb-1 font-medium text-green-600">Date de permis</label><input type="text" name="license_date_conducteur" value="${client.license_date || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div><div class="flex flex-col md:col-span-2"><label class="mb-1 font-medium text-green-600">Adresse</label><input type="text" name="address_conducteur" value="${client.address || ''}" class="bg-white text-gray-800 border border-gray-300 rounded px-3 py-2" /></div>`;
+                                        } else {
+                                            formHtml = `<div class="p-6 bg-gray-100 rounded-xl shadow-md text-gray-800 space-y-4"><p class="text-lg font-semibold">Aucun client trouvé. Veuillez remplir manuellement :</p><br><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="block mb-1 text-green-600 font-medium">Nom</label><input type="text" name="last_name_conducteur" required></div><div><label class="block mb-1 text-green-600 font-medium">Prénom</label><input type="text" name="first_name_conducteur" required></div><div><label class="block mb-1 text-green-600 font-medium">Date de naissance</label><input type="date" name="date_of_birth_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Lieu de naissance</label><input type="text" name="place_of_birth_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Nationalité</label><input type="text" name="nationality_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Numéro de carte d'identité</label><input type="text"value="${cin}" name="identity_number_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Date d'identité</label><input type="date" name="identity_date_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Numéro de permis</label><input type="text" name="driver_license_number_conducteur" required></div><div><label class="block mb-1 text-green-600 font-medium">Date de permis</label><input type="date" name="license_date_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Adresse</label><input type="text" name="address_conducteur"></div><div><label class="block mb-1 text-green-600 font-medium">Téléphone</label><input type="text" name="mobile_number_conducteur"></div><div class="md:col-span-2"><label for="gallery" class="block text-sm font-medium leading-6 text-gray-900">Télécharger carte d'identité et permis de conduire (recto et verso)</label><div class="mt-2"><input type="file" name="gallery_conducteur[]" id="gallery_conducteur" accept="image/*" multiple class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"><small class="text-gray-500">Vous pouvez sélectionner le passeport.</small></div></div></div></div>`;
+                                        }
+                                        const driverForm = document.getElementById('driver-form');
+                                        if (driverForm) {
+                                            driverForm.innerHTML = formHtml;
+                                            console.log('Form updated successfully');
+                                        } else {
+                                            console.error('driver-form element not found');
+                                        }
+                                        document.getElementById('additionalForm').classList.add('hidden');
+                                    })
+                                    .catch(error => {
+                                        console.error("Erreur lors de la requête :", error);
+                                        alert('Erreur lors de la vérification du CIN. Veuillez réessayer.');
+                                    });
+                            }
+                        </script>
+                        <script>
+                            function toggleSecondDriverForm() {
+                                document.getElementById("second-driver-form").style.display = "block";
+                                document.getElementById("toggle-form").style.display = "none";
+                            }
+                            function hideSecondDriverForm() {
+                                document.getElementById("second-driver-form").style.display = "none";
+                                document.getElementById("toggle-form").style.display = "inline-flex";
+                                document.getElementById("driver-form").innerHTML = "";
+                                document.getElementById("second_driver_cin").value = "";
+                            }
+
+                            function testShowForm() {
+                                console.log('Test function called');
+                                const driverForm = document.getElementById('driver-form');
+                                if (driverForm) {
+                                    const testFormHtml = `
+                                        <div class="p-6 bg-gray-100 rounded-xl shadow-md text-gray-800 space-y-4">
+                                            <p class="text-lg font-semibold">Test Form - Client trouvé :</p>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label class="block mb-1 text-green-600 font-medium">Nom</label>
+                                                    <input type="text" name="last_name_conducteur" value="Test Nom" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block mb-1 text-green-600 font-medium">Prénom</label>
+                                                    <input type="text" name="first_name_conducteur" value="Test Prénom" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block mb-1 text-green-600 font-medium">CIN</label>
+                                                    <input type="text" name="identity_number_conducteur" value="12345678" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
+                                                </div>
+                                                <div>
+                                                    <label class="block mb-1 text-green-600 font-medium">Permis</label>
+                                                    <input type="text" name="driver_license_number_conducteur" value="ABC123" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    driverForm.innerHTML = testFormHtml;
+                                    console.log('Test form loaded successfully');
+                                } else {
+                                    console.error('driver-form element not found in test');
+                                }
+                            }
+                        </script>
 
                         {{-- Submit Button --}}
                         <div class="pt-6">
                             <button type="submit"
-                                class="inline-flex justify-center rounded-md border border-transparent bg-pr-400 py-2 px-4 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-pr-400 focus:ring-offset-2">
-                                Submit
+                                class="inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-pr-400 focus:ring-offset-2">
+                                Reserver
                             </button>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -167,8 +517,8 @@
             {{-- -------------------------------------------- right -------------------------------------------- --}}
 
             <div class="md:w-1/3 flex flex-col justify-start items-center">
-                <div class="relative mx-3 mt-3 flex h-[200px] w-3/4   overflow-hidden rounded-xl shadow-lg">
-                    <img loading="lazy" class="h-full w-full object-cover" src="{{ $car->image }}" alt="product image" />
+                <div class="relative mx-3 mt-36 flex h-[250px] w-3/4   overflow-hidden rounded-xl shadow-lg">
+                    <img loading="lazy" class="h-full w-full object-cover" src="{{ asset('storage/' . $car->image) }}" alt="product image" />
                     <span
                         class="absolute w-36 h-8 py-1 top-0 left-0 m-2 rounded-full bg-pr-400 px-2 text-center text-sm font-medium text-white">{{ $car->reduce }}
                         % de réduction</span>
@@ -192,88 +542,254 @@
                 </div>
 
 
-                <div class=" w-full   mt-8 ms-8">
-                    <p id="duration" class="font-car text-gray-600 text-lg ms-2">Durée estimée: <span
-                            class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md "> --
-                            jours</span>
+                @php
+                    $start_date = $start_date ?? session('start_date');
+                    $end_date = $end_date ?? session('end_date');
+                    $days = null;
+                    if ($start_date && $end_date) {
+                        $start = \Carbon\Carbon::parse($start_date);
+                        $end = \Carbon\Carbon::parse($end_date);
+                        $days = $start->diffInDays($end);
+                    }
+                @endphp
+
+                <div class="w-full mt-8 ms-8">
+                    <p class="font-car text-gray-600 text-lg ms-2">
+                        Durée estimée :
+                        <span id="duration" class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md">
+                            {{ $days ?? '--' }} jours
+                        </span>
                     </p>
                 </div>
 
-                <div class=" w-full   mt-8 ms-8">
-                    <p id="total-price" class="font-car text-gray-600 text-lg ms-2">Prix estimé:<span
-                            class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md "> --
-                            DT</span>
-                    </p>
+
+                <div class="w-full mt-8 ms-8">
+                    <div class="mb-6">
+                        <p class="font-car text-gray-600 text-lg ms-2">Prix estimé:
+                            <span class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md">
+                                @php
+                                    $totalPrice = $days ? $car->price_per_day * $days : 0;
+                                @endphp
+                                <span id="total-price" data-price-display>{{ number_format($totalPrice, 2, '.', '') }} DT</span>
+
+                                @if($car->reduce > 0)
+                                    @php
+                                        $priceWithDiscount = intval(($car->price_per_day * 100) / (100 - $car->reduce)) * $days;
+                                    @endphp
+                                    <span class="text-sm text-red-500 line-through ml-2">
+                                        {{ $priceWithDiscount }} DT
+                                    </span>
+                                @endif
+                            </span>
+                        </p>
+                    </div>
+
+                    @if($car->seasonal_price)
+                        <div class="mb-6">
+                            <p class="font-car text-gray-600 text-lg ms-2">Prix Saisonnier:
+                                <span class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md">
+                                    @php
+                                        $seasonalPrice = $days ? $car->seasonal_price * $days : 0;
+                                    @endphp
+                                    {{ $seasonalPrice }} DT
+                                </span>
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($car->summer_price)
+                        <div class="mb-6">
+                            <p class="font-car text-gray-600 text-lg ms-2">Prix d'été:
+                                <span class="mx-2 font-car text-md font-medium text-gray-700 border border-pr-400 p-2 rounded-md">
+                                    @php
+                                        $summerPrice = $days ? $car->summer_price * $days : 0;
+                                    @endphp
+                                    {{ $summerPrice }} DT
+                                </span>
+                            </p>
+                        </div>
+                    @endif
+
+                    <div class="space-y-5 mt-6">
+                        <div class="space-y-5 mt-6">
+                            <div class="flex items-center justify-between bg-white p-4 rounded shadow">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-indigo-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                    </svg>
+                                    <h5 class="text-lg font-medium text-gray-700">Options supplémentaires</h5>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="options_toggle" class="sr-only peer" onchange="toggleOptions(this.checked)">
+                                    <div class="w-12 h-6 bg-green-300 peer-checked:bg-green-600 rounded-full transition-colors duration-300"></div>
+                                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 peer-checked:translate-x-6"></div>
+                                </label>
+                            </div>
+                            <script>
+                                function toggleOptions(state) {
+                                    console.log("Options supplémentaires activées :", state);
+                                    const section = document.getElementById('options-supplementaires');
+                                    if (section) {
+                                        section.style.display = state ? 'block' : 'none';
+                                    }
+                                }
+                            </script>
+                            <script src="https://cdn.tailwindcss.com"></script>
+                            <div id="options-supplementaires" class="space-y-5 mt-4" style="display:none;">
+
+                                <label class="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition cursor-pointer border border-gray-200">
+                                    <input type="hidden" name="avec_chauffeur" value="0">
+                                    <input type="checkbox" id="chauffeur" name="avec_chauffeur" value="1"
+                                        class="mt-1 w-5 h-5 text-indigo-500 border-gray-300 rounded focus:ring-indigo-400"
+                                        @if(old('avec_chauffeur')) checked @endif>
+                                    <div class="flex items-center gap-4">
+                                        <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M3 11v8a1 1 0 001 1h1a1 1 0 001-1v-1h12v1a1 1 0 001 1h1a1 1 0 001-1v-8l-2-5H5l-2 5zm4 4a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm10 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Service avec chauffeur</p>
+                                            <p class="text-sm text-gray-500">+15% du tarif de base</p>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition cursor-pointer border border-gray-200">
+                                    <input type="hidden" name="siege_bebe" value="0">
+                                    <input type="checkbox" id="siegeBebe" name="siege_bebe" value="1"
+                                        class="mt-1 w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-400"
+                                        @if(old('siege_bebe')) checked @endif>
+                                    <div class="flex items-center gap-4">
+                                        <div class="p-2 bg-yellow-100 text-yellow-600 rounded-lg">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 2a3 3 0 100 6 3 3 0 000-6zM5 8a5 5 0 0110 0v1a5 5 0 01-10 0V8zm1 4.5a1.5 1.5 0 100 3 1.5 1.5 0 010 3zm8 0a1.5 1.5 0 100 3 1.5 1.5 0 010-3z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Siège bébé</p>
+                                            <p class="text-sm text-gray-500">Gratuit (sur demande)</p>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <div class="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition border border-gray-200">
+                                    <div class="p-2 bg-blue-100 text-blue-600 rounded-lg mt-1">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2.94 2.94a1.5 1.5 0 012.12 0l12 12a1.5 1.5 0 01-2.12 2.12l-4.95-4.95-1.42 4.24a1 1 0 01-1.88.06L6.1 13.9 3.64 16.36a1.5 1.5 0 11-2.12-2.12L4.1 11.9l-1.42-1.42a1 1 0 01.06-1.88l4.24-1.42-4.95-4.95a1.5 1.5 0 010-2.12z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label for="vol" class="block font-medium text-gray-800">Numéro de vol</label>
+                                        <input type="text" id="vol" name="numero_vol"
+                                            placeholder="Ex: TU1234"
+                                            value="{{ old('numero_vol') }}"
+                                            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-             
             </div>
         </div>
 
         @if (session('error'))
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: "{{ session('error') }}"
+                });
+            </script>
+        @endif
+    </div>
     <script>
-        // Vérifie si un message d'erreur est présent dans la session
-        const Toast = Swal.mixin({
-            toast: true, // Le toast apparaîtra sous forme de pop-up
-            position: "top-end", // Position de l'alerte dans le coin supérieur droit
-            showConfirmButton: false, // Pas de bouton de confirmation
-            timer: 3000, // Le toast disparaît après 3 secondes
-            timerProgressBar: true, // Affiche la barre de progression
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer; // Arrêter la minuterie si l'utilisateur survole l'alerte
-                toast.onmouseleave = Swal.resumeTimer; // Relancer la minuterie si l'utilisateur quitte l'alerte
-            }
-        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+            const durationEl = document.getElementById('duration');
+            const totalPriceEl = document.getElementById('total-price');
+            const pricePerDay = {{ $car->price_per_day }};
 
-        // Affiche le toast avec l'icône d'erreur et le message d'erreur
-        Toast.fire({
-            icon: "error", // Icône d'erreur
-            title: "{{ session('error') }}" // Message d'erreur récupéré de la session
+            function daysBetween(start, end) {
+                const msPerDay = 1000 * 60 * 60 * 24;
+                const diff = Math.ceil((end - start) / msPerDay);
+                return Math.max(1, diff);
+            }
+
+            function updateDurationAndPrice() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (isNaN(startDate) || isNaN(endDate)) {
+                    if (durationEl) durationEl.textContent = '-- jours';
+                    if (totalPriceEl) totalPriceEl.textContent = '-- DT';
+                    return;
+                }
+
+                if (startDate <= endDate) {
+                    const durationDays = daysBetween(startDate, endDate);
+                    const totalPrice = durationDays * pricePerDay;
+                    if (durationEl) durationEl.textContent = `${durationDays} jours`;
+                    if (totalPriceEl) totalPriceEl.textContent = `${totalPrice.toFixed(2)} DT`;
+                } else {
+                    if (durationEl) durationEl.textContent = '-- jours';
+                    if (totalPriceEl) totalPriceEl.textContent = '-- DT';
+                }
+            }
+            updateDurationAndPrice();
+            startDateInput.addEventListener('change', updateDurationAndPrice);
+            endDateInput.addEventListener('change', updateDurationAndPrice);
         });
     </script>
-@endif
-
-
-        
-    </div>
-    
-
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
+        document.addEventListener('DOMContentLoaded', function() {
+            const chauffeurCheckbox = document.getElementById('chauffeur');
+            const totalPriceEl = document.getElementById('total-price');
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+            const pricePerDay = {{ $car->price_per_day }};
 
-        function updateDurationAndPrice() {
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(endDateInput.value);
-
-            if (isNaN(startDate) || isNaN(endDate)) {
-                document.getElementById('duration').textContent = 'Estimated Duration: --';
-                document.getElementById('total-price').textContent = 'Estimated Price: --';
-                return;
+            function daysBetween(start, end) {
+                const msPerDay = 1000 * 60 * 60 * 24;
+                const diff = Math.ceil((end - start) / msPerDay);
+                return Math.max(1, diff);
             }
 
-            if (startDate <= endDate) {
-                const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                const pricePerDay = {{ $car->price_per_day }};
-                const totalPrice = duration * pricePerDay;
-
-                document.getElementById('duration').textContent = `Estimated Duration: ${duration} days`;
-                document.getElementById('total-price').textContent = `Estimated Price: ${totalPrice} $`;
-            } else {
-                document.getElementById('duration').textContent = 'Estimated Duration: --';
-                document.getElementById('total-price').textContent = 'Estimated Price: --';
+            function currentBasePrice() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                if (isNaN(startDate) || isNaN(endDate)) return null;
+                const durationDays = daysBetween(startDate, endDate);
+                return durationDays * pricePerDay;
             }
-        }
 
-        // Call the function initially to calculate based on pre-selected values
-        updateDurationAndPrice();
-
-        // Add event listeners for changes
-        startDateInput.addEventListener('change', updateDurationAndPrice);
-        endDateInput.addEventListener('change', updateDurationAndPrice);
-    });
-</script>
-
-
-
+            if (chauffeurCheckbox && totalPriceEl) {
+                chauffeurCheckbox.addEventListener('change', function() {
+                    const base = currentBasePrice();
+                    if (base === null) return;
+                    const isChecked = this.checked;
+                    const newPrice = isChecked ? base * 1.15 : base;
+                    totalPriceEl.textContent = newPrice.toFixed(2) + ' DT';
+                    const discountElement = document.querySelector('.line-through');
+                    if (discountElement) {
+                        const durationDays = currentBasePrice() / pricePerDay;
+                        const originalDiscount = {{ intval(($car->price_per_day * 100) / (100 - $car->reduce)) }} * durationDays;
+                        discountElement.textContent = (isChecked ? originalDiscount * 1.15 : originalDiscount).toFixed(2) + ' DT';
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

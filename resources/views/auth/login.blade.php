@@ -1,13 +1,15 @@
 @extends('layouts.myapp')
-@section('content')
+@section('login')
+<div style="color: white;">fhhhhh <br>kegkeke <br>555 <br>aaaa</div>
     <div class="grid place-items-center h-screen">
-        <div class="border p-5 md:w-1/2 w-4/5 bg-sec-100 -mt-48">
-            <form method="POST" action="{{ route('login', ['car_id' => $car_id ?? '']) }}">
+        <div class="p-5 bg-sec-100 -mt-48 mx-auto" style="width:500px;">
+            <form method="POST" action="{{ route('cin.login', ['car_id' => $car_id ?? '']) }}">
+                <input type="hidden" name="car_id" value="{{ $car_id }}">
                 @csrf
                 <div class="mb-6">
-                <input type="date" name="start_date" value="{{ request('start_date') }}" style="display: none;">
+                <input type="hidden" name="start_date" value="{{ request('start_date') }}">
                     <input type="time" name="delivery_time" value="{{ request('delivery_time') }}"  style="display: none;">
-                    <input type="date" name="end_date" value="{{ request('end_date') }}" style="display: none;">
+                    <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                     <input type="time" name="return_time" value="{{ request('return_time') }}" style="display: none;">
                     <label for="identity_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your CIN</label>
                     <input type="text" id="identity_number" name="identity_number" value="{{ old('identity_number') }}"

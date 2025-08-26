@@ -15,6 +15,13 @@ class clientCarController extends Controller
         $cars = Car::where('status', '=', 'available')->paginate(9);
         return view('cars.cars', compact('cars'));
     }
+    public function cardi(Request $request)
+{
+    $cars = Car::latest()->paginate(8);
+    $highlight = $request->input('highlight'); // ID de la voiture à mettre en surbrillance
+
+    return view('admin.cardi', compact('cars', 'highlight'));
+}
 
     /**
      * Show the form for creating a new resource.

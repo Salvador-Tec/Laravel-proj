@@ -1,4 +1,5 @@
-@extends('layouts.myapp')
+@extends('admin.noname')
+
 @section('content')
 
 @if (session('error'))
@@ -27,22 +28,58 @@
     </script>
 
          <!-- Formulaire de recherche avec deux dates et deux heures -->
-    <div class="bg-gray-200 mx-auto max-w-screen-xl mt-10 p-6 rounded-md shadow-xl">
+         <div class="bg-gray-200 mx-auto max-w-screen-2xl mt-10 p-6 rounded-md shadow-xl">
     <form action="{{route('cars.available')}}" method="GET">
         <!-- Section des filtres -->
         <div class="flex justify-center md:flex-row flex-col md:gap-28 gap-4">
             <!-- Champs des dates et heures -->
             <div class="flex justify-evenly md:flex-row flex-col md:gap-16 gap-2">
+                <div>
+                    <label for="pickup_location" class="block text-sm text-gray-700">Départ</label>
+                    <select name="pickup_location" id="pickup_location"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"
+
+                        required>
+                        <option value="">-- un lieu -- </option>
+                        <option value="Tunis">Tunis</option>
+                        <option value="Sfax">Sfax</option>
+                        <option value="Sousse">Sousse</option>
+                        <option value="Djerba">Djerba</option>
+                        <option value="Tunis">Gasserine</option>
+                        <option value="Sfax">Nabeul</option>
+                        <option value="Sousse">Mahdia</option>
+                        <option value="Djerba">Gabes</option>
+                        <!-- Ajoute d'autres lieux si nécessaire -->
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="return_location" class="block text-sm text-gray-700">Restitution</label>
+                    <select name="return_location" id="return_location"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"
+                        required>
+                        <option value="">-- un lieu -- </option>
+                        <option value="Tunis">Tunis</option>
+                        <option value="Sfax">Sfax</option>
+                        <option value="Sousse">Sousse</option>
+                        <option value="Djerba">Djerba</option>
+                        <option value="Tunis">Gasserine</option>
+                        <option value="Sfax">Nabeul</option>
+                        <option value="Sousse">Mahdia</option>
+                        <option value="Djerba">Gabes</option>
+                        <!-- Ajoute d'autres lieux si nécessaire -->
+                    </select>
+                </div>
                 <!-- Champ Date de début -->
                 <div>
-                    <label for="start_date" class="block text-sm text-gray-700">Date de début</label>
+                    <label for="start_date" class="block text-sm text-gray-700">Date Début</label>
                     <input type="date" name="start_date" id="start_date" 
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"
                         required>
                 </div>
                 <!-- Champ Heure de début -->
                 <div>
-                    <label for="delivery_time" class="block text-sm text-gray-700">Heure de début</label>
+                    <label for="delivery_time" class="block text-sm text-gray-700">Heure Début</label>
                     <input 
                         type="time" 
                         id="delivery-time" 
@@ -53,14 +90,14 @@
                 </div>
                 <!-- Champ Date de fin -->
                 <div>
-                    <label for="end_date" class="block text-sm text-gray-700">Date de fin</label>
+                    <label for="end_date" class="block text-sm text-gray-700">Date Fin</label>
                     <input type="date" name="end_date" id="end_date" 
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"
                         required>
                 </div>
                 <!-- Champ Heure de fin -->
                 <div>
-                    <label for="return_time" class="block text-sm text-gray-700">Heure de fin</label>
+                    <label for="return_time" class="block text-sm text-gray-700">Heure Fin</label>
                     <input 
                         type="time" 
                         id="return-time" 
@@ -68,6 +105,19 @@
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6"
                         required
                         readonly>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Type Boîte</label>
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="gearbox_type[]" value="manuelle" class="form-checkbox text-pr-400">
+                            <span class="ml-2 text-gray-700">Manuelle</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="gearbox_type[]" value="Automatique" class="form-checkbox text-pr-400">
+                            <span class="ml-2 text-gray-700">Automatique</span>
+                        </label>
+                    </div>
                 </div>
 
             </div>
@@ -90,7 +140,7 @@
         <div
             class="relative md:m-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
             <a class="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl">
-                <img loading="lazy" class="object-cover" src="{{ $car->image }}" alt="product image" />
+                <img loading="lazy" class="object-cover" src="{{ asset('storage/' . $car->image) }}" alt="product image" />
                 <span
                     class="absolute top-0 left-0 m-2 rounded-full bg-pr-400 px-2 text-center text-sm font-medium text-white">
                     {{ $car->reduce }} % de réduction

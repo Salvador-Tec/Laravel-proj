@@ -12,17 +12,15 @@
             <form action="#" class="space-y-8" id="contact-form">
                 <div class="flex justify-between">
                     <div class="w-full mr-5">
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">First
-                            Name</label>
-                        <input type="email" id="email"
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom</label>
+                        <input type="text" id="email"
                             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                             placeholder="Mohamed" required>
                     </div>
 
                     <div class="w-full ">
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Last
-                            Name</label>
-                        <input type="email" id="email"
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Prénom</label>
+                        <input type="text" id="email"
                             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                             placeholder="Galdi" required>
                     </div>
@@ -37,8 +35,8 @@
                     </div>
 
                     <div class="w-full ">
-                        <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Phone
-                            Number</label>
+                        <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Numéro de Téléphone
+                            </label>
                         <input type="text" id="text"
                             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                             placeholder="+212600000000" required>
@@ -46,26 +44,26 @@
                 </div>
                 <div>
                     <label for="subject"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Subject</label>
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sujet</label>
                     <select name="subject" id="subject"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light">
-                        <option value="0" disabled selected>Select subject</option>
+                        <option value="0" disabled selected>Selectuonné sujet</option>
                         <option value="reservation">reservation</option>
                         <option value="payment">payment</option>
-                        <option value="car problem">car problem</option>
+                        <option value="car problem">problème voiture</option>
                         <option value="cancelation">cancelation</option>
-                        <option value="other">other</option>
+                        <option value="other">autre</option>
                     </select>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Your
+                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Votre
                         message</label>
                     <textarea id="message" rows="6"
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Leave a comment..."></textarea>
                 </div>
                 <button type="submit"
-                    class="p-3 mb-16 font-bold border rounded-md border-pr-400 text-pr-400 hover:text-white hover:bg-pr-400">Send
+                    class="p-3 mb-16 font-bold border rounded-md border-pr-400 text-pr-400 hover:text-white hover:bg-pr-400">Envoyer
                     message</button>
             </form>
         </div>

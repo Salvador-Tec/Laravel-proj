@@ -1,0 +1,135 @@
+/* ----------- About Page Custom Styles ----------- */
+.breadcrumb-wrapper {
+  padding: 60px 0 40px 0;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  min-height: 450px;
+  display: flex;
+  align-items: flex-end;
+}
+.breadcrumb-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0; top: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1;
+}
+.breadcrumb-wrapper .container {
+  position: relative;
+  z-index: 2;
+}
+.page-heading {
+  color: #fff;
+  text-align: left;
+}
+.breadcrumb-items {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  list-style: none;
+}
+.breadcrumb-items li {
+  color: #fff;
+  opacity: 0.9;
+}
+.breadcrumb-items li a {
+  color: #fff;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.breadcrumb-items li a:hover {
+  color: #ff0000;
+}
+.page-heading h1 {
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.about-section {
+  padding: 60px 0 40px 0;
+  background: #f8f9fa;
+}
+.about-wrapper-2 {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+  padding: 40px 30px;
+  margin-top: -80px;
+  position: relative;
+  z-index: 3;
+}
+.about-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.about-image img {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+.about-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+.about-content .section-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.about-content .section-title img {
+  width: 38px;
+  height: 10px;
+}
+.about-content .section-title span {
+  font-size: 20px;
+  font-weight: 600;
+  color: #d01818;
+  letter-spacing: 0.5px;
+}
+.about-content p {
+  font-size: 17px;
+  color: #444;
+  line-height: 1.7;
+  margin-top: 10px;
+}
+@media (max-width: 991px) {
+  .about-wrapper-2 {
+    padding: 25px 10px;
+  }
+  .about-section {
+    padding: 40px 0 20px 0;
+  }
+  .about-image img {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .breadcrumb-wrapper {
+    padding: 40px 0 20px 0;
+    min-height: 120px;
+  }
+  .about-section {
+    padding: 20px 0 10px 0;
+  }
+  .about-content .section-title span {
+    font-size: 16px;
+  }
+  .about-content p {
+    font-size: 15px;
+  }
+  .about-wrapper-2 {
+    margin-top: -40px;
+  }
+} 

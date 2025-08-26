@@ -61,73 +61,71 @@ class LoginController extends Controller
         
     }
 
-    public function login(Request $request)
-{   
-    try {
-        // Validation du champ CIN
-        $request->validate([
-            'identity_number' => 'required|string|max:255',
-        ]);
-
-        // Vérification de car_id dans l'URL
-        $car_id = $request->input('car_id'); // Ou $request->input('car_id')
-
-        // Ajout d'un message de débogage pour voir si car_id est récupéré
-        //dd($car_id); // Cela vous permettra de voir si le car_id est bien récupéré
-
-        // Vérification si car_id est présent
-        if (!$car_id) {
-            return back()->with('error', 'car_id est manquant.');
-        }
-
-        // Récupérer la voiture par car_id
-        $car = Car::find($car_id); // Cherche la voiture par son ID
-
-        if (!$car) {
-            return back()->with('error', 'La voiture spécifiée est introuvable.');
-        }
-        
-
-        // Récupérer le numéro d'identité
-        $identityNumber = $request->input('identity_number');
-        
-        // Stocker le numéro d'identité dans la session
-        session(['identity_number' => $identityNumber]);
-
-
-
-        // Recherche d'une réservation existante avec le CIN
-        //$identityNumber = $request->input('identity_number');
-        $client = Client::where('identity_number', $identityNumber)->first();
-
-        $reservation = Reservation::where('identity_number', $identityNumber)->first();
-
-        // Si une réservation existe, retourner le formulaire d'édition
-        if ($reservation) {
-            return view('reservation.edit', [
-                'client' => $client,
-                'car' => $car, // Passe la voiture à la vue
-                'identityNumber' => $identityNumber, // Passe le CIN à la vue
+    public function login(Request $request, $car_id = null)
+    {
+        try {
+            // Validation du champ CIN
+            $request->validate([
+                'identity_number' => 'required|string|max:255',
             ]);
-        } else {
-            // Si aucune réservation n'existe, afficher le formulaire de création
-            //return view('reservation.create', compact('car')); // Passe la voiture pour la création
-
-            // Si aucune réservation n'existe, afficher le formulaire de création
-            return view('reservation.create', [
-                'car' => $car, // Passe la voiture pour la création
-                'identityNumber' => $identityNumber, // Passe le CIN à la vue
+    
+            // Vérification de car_id dans l'URL
+            $car_id = $car_id ?? $request->input('car_id'); 
+    
+            // Vérification si car_id est présent
+            if (!$car_id) {
+                return back()->with('error', 'car_id est manquant.');
+            }
+    
+            // Récupérer la voiture par car_id
+            $car = Car::find($car_id); 
+    
+            if (!$car) {
+                return back()->with('error', 'La voiture spécifiée est introuvable.');
+            }
+    
+            // Récupérer le numéro d'identité
+            $identityNumber = $request->input('identity_number');
+            
+            // Stocker le numéro d'identité dans la session
+            session(['identity_number' => $identityNumber]);
+    
+            // Récupérer les dates de début et de fin (elles peuvent être envoyées via la requête ou la session)
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $delivery_time = $request->input('delivery_time');
+            $return_time = $request->input('return_time');
+            
+            // Stocker les dates dans la session pour y accéder dans la vue de création
+            session([
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'delivery_time' => $delivery_time,
+                'return_time' => $return_time,
             ]);
+    
+            // Recherche d'une réservation existante avec le CIN
+            $client = Client::where('identity_number', $identityNumber)->first();
+            $reservation = Reservation::where('identity_number', $identityNumber)->first();
+    
+            // Si une réservation existe, retourner le formulaire d'édition
+            if ($reservation) {
+                return view('reservation.edit', [
+                    'client' => $client,
+                    'car' => $car, // Passe la voiture à la vue
+                    'identityNumber' => $identityNumber, // Passe le CIN à la vue
+                ]);
+            } else {
+                // Si aucune réservation n'existe, afficher le formulaire de création
+                return redirect()->route('reservations.create', ['car_id' => $car->id]);
+            }
+        } catch (\Exception $e) {
+            return back()->withError('Une erreur est survenue. Veuillez réessayer plus tard.')->withInput();
         }
-    } catch (\Exception $e) {
-        return back()->withError('Une erreur est survenue. Veuillez réessayer plus tard.')->withInput();
     }
-}
 
 
     
 
 }
-
-
 

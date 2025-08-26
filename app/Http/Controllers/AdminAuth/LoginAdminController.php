@@ -36,4 +36,15 @@ class LoginAdminController extends Controller
     {
         return 'email'; // Adjust the admin login field (e.g., email, username) as per your project's setup
     }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            return redirect()->intended('/admin/dashboard');
+        }
+        return back()->withErrors([
+            'email' => 'Identifiants invalides.',
+        ]);
+    }
 }

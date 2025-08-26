@@ -22,8 +22,8 @@
                 </div>
 
                 <div class="my-5 w-full flex items-center">
-                    <input type="radio" id="tpe" name="payment_method" value="TPE" class="mr-2" onchange="showAmountField()">
-                    <label for="tpe" class="mr-4">TPE</label>
+                    <input type="radio" id="Carte" name="payment_method" value="Carte crédit" class="mr-2" onchange="showAmountField()">
+                    <label for="tpe" class="mr-4">Carte crédit</label>
 
                     <input type="radio" id="cheque" name="payment_method" value="Cheque" class="mr-2" onchange="showAmountField()">
                     <label for="cheque" class="mr-4">Chèque</label>
@@ -31,8 +31,7 @@
                     <input type="radio" id="espèce" name="payment_method" value="Espèce" class="mr-2" onchange="showAmountField()">
                     <label for="espèce" class="mr-4">Espèce</label>
 
-                    <input type="radio" id="virement" name="payment_method" value="Virement" class="mr-2" onchange="showAmountField()">
-                    <label for="virement" class="mr-4">Virement</label>
+                    
                 </div>
 
                 <!-- Amount Paid (only shown if a valid payment method is selected) -->

@@ -1,48 +1,133 @@
-@extends('layouts.myapp') {{-- Hérite de la mise en page principale --}}
+@extends('admin.noname')
 
 @section('content')
-<div class="container mx-auto mt-8">
-<h2 class="text-2xl font-bold mb-6 ml-4">Liste des Clients</h2>
+ <div class="container-xxl flex-grow-1 container-p-y">
+              <!-- Product List Widget -->
+              <div class="card mb-6">
+                <div class="card-widget-separator-wrapper">
+                  <div class="card-body card-widget-separator">
+                    <div class="row gy-4 gy-sm-1">
+                      <div class="col-sm-6 col-lg-3">
+                        <div
+                          class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-4 pb-sm-0">
+                          <div>
+                            <p class="mb-1">In-store Sales</p>
+                            <h4 class="mb-1">$5,345.43</h4>
+                            <p class="mb-0">
+                              <span class="me-2">5k orders</span><span class="badge bg-label-success">+5.7%</span>
+                            </p>
+                          </div>
+                          <span class="avatar me-sm-6">
+                            <span class="avatar-initial rounded"
+                              ><i class="icon-base ti tabler-smart-home icon-28px text-heading"></i
+                            ></span>
+                          </span>
+                        </div>
+                        <hr class="d-none d-sm-block d-lg-none me-6" />
+                      </div>
+                      <div class="col-sm-6 col-lg-3">
+                        <div
+                          class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-4 pb-sm-0">
+                          <div>
+                            <p class="mb-1">Website Sales</p>
+                            <h4 class="mb-1">$674,347.12</h4>
+                            <p class="mb-0">
+                              <span class="me-2">21k orders</span><span class="badge bg-label-success">+12.4%</span>
+                            </p>
+                          </div>
+                          <span class="avatar p-2 me-lg-6">
+                            <span class="avatar-initial rounded"
+                              ><i class="icon-base ti tabler-device-laptop icon-28px text-heading"></i
+                            ></span>
+                          </span>
+                        </div>
+                        <hr class="d-none d-sm-block d-lg-none" />
+                      </div>
+                      <div class="col-sm-6 col-lg-3">
+                        <div
+                          class="d-flex justify-content-between align-items-start border-end pb-4 pb-sm-0 card-widget-3">
+                          <div>
+                            <p class="mb-1">Discount</p>
+                            <h4 class="mb-1">$14,235.12</h4>
+                            <p class="mb-0">6k orders</p>
+                          </div>
+                          <span class="avatar p-2 me-sm-6">
+                            <span class="avatar-initial rounded"
+                              ><i class="icon-base ti tabler-gift icon-28px text-heading"></i
+                            ></span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-sm-6 col-lg-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                          <div>
+                            <p class="mb-1">Affiliate</p>
+                            <h4 class="mb-1">$8,345.23</h4>
+                            <p class="mb-0">
+                              <span class="me-2">150 orders</span><span class="badge bg-label-danger">-3.5%</span>
+                            </p>
+                          </div>
+                          <span class="avatar p-2">
+                            <span class="avatar-initial rounded"
+                              ><i class="icon-base ti tabler-wallet icon-28px text-heading"></i
+                            ></span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    {{-- Message de succès ou d'erreur --}}
-    @if (session('success'))
-        <div class="bg-green-100 text-green-700 p-4 rounded mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if (session('error'))
-        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
-            {{ session('error') }}
-        </div>
-    @endif
 
-    {{-- Table des clients --}}
-    <div class="overflow-x-auto">
-        <table class="table-auto w-full border-collapse border border-gray-200">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border border-gray-300 px-4 py-2">Prénom</th>
-                    <th class="border border-gray-300 px-4 py-2">Nom</th>
-                    <th class="border border-gray-300 px-4 py-2">Nationalité</th>
-                    <th class="border border-gray-300 px-4 py-2">Numéro d'Identité</th>
-                    <th class="border border-gray-300 px-4 py-2">Numéro de Permis</th>
-                    <th class="border border-gray-300 px-4 py-2">Adresse</th>
-                    <th class="border border-gray-300 px-4 py-2">Numéro de Téléphone</th>
-                    <th class="border border-gray-300 px-4 py-2">Cartes</th>
-                    <th class="border border-gray-300 px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
+              <!-- Product List Table -->
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    
+                       <!-- Search -->
+                <li class="nav-item navbar-search-wrapper btn btn-text-secondary btn-icon rounded-pill">
+                  <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                    <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
+                  </a>
+                </li>
+              <!-- Basic Bootstrap Table -->
+              <div class="card">
+                <h5 class="card-header">Table Basic</h5>
+                <!-- Barre de recherche positionnée à droite -->
+<div class="d-flex justify-content-end mt-3 me-3">
+  <input id="searchInput" type="text" class="form-control w-auto" placeholder="Rechercher un client..." onkeyup="filterClients()" />
+</div>
+
+<br/>
+                <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                         <th >Prénom</th>
+                <th>Nom</th>
+              
+              
+                <th>Numéro d'Identité</th>
+                <th>Numéro de Permis</th>
+                <th>Adresse</th>
+                <th>Numéro de Téléphone</th>
+                <th>Cartes</th>
+                <th>Actions</th>
+                      </tr>
+                    </thead>
+                               <tbody>
                 @foreach ($clients as $client)
-                <tr class="@if(request('highlight') && request('highlight') == $client->identity_number) selected-row @endif">
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->last_name}}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->first_name}}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->nationality }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->identity_number }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->driver_license_number }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->address }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $client->mobile_number }}</td>
-                   <td class="border border-gray-300 px-4 py-2">
+                <tr id="client-row-{{ $client->id }}"  
+    class="{{ ($client->is_blocked ? 'blocked-row' : '') }} {{ (request('highlight') == $client->identity_number ? 'selected-row' : '') }}">
+
+                    <td >{{ $client->last_name}}</td>
+                    <td >{{ $client->first_name}}</td>
+                 
+                  
+                    <td >{{ $client->identity_number }}</td>
+                    <td >{{ $client->driver_license_number }}</td>
+                    <td >{{ $client->address }}</td>
+                    <td >{{ $client->mobile_number }}</td>
+                   <td >
     @if(is_array($client->gallery) && count($client->gallery) > 0)
         <!-- Bouton pour ouvrir la modale -->
         <button class="btn-super-attractive" onclick="openModal({{ $client->id }})">
@@ -56,7 +141,7 @@
                 <button class="close-btn" onclick="closeModal({{ $client->id }})">X</button>
                 <div class="modal-images">
                     @foreach ($client->gallery as $image)
-                        <img src="{{ asset($image) }}" alt="Image du client" class="modal-image">
+                        <img src="{{ asset('storage/' . $image) }}" alt="Image du client" class="modal-image" style="width: 60px; height: auto;">
                     @endforeach
                 </div>
             </div>
@@ -66,172 +151,70 @@
     @endif
 </td>
 
-                    <td class="border border-gray-300 px-4 py-2">
-                        <form action="{{ route('deleteUser', $client->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:underline"
-                                onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
-                                Supprimer
-                            </button>
-                        </form>
-                    </td>
+ <td>
+  <div class="dropdown">
+    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+      <i class="icon-base ti tabler-dots-vertical"></i>
+    </button>
+    <div class="dropdown-menu">
+      <!-- Lien pour voir (œil) -->
+   <a class="dropdown-item" href="{{ route('clients.details', ['id' => $client->id]) }}">
+  <i class="icon-base ti tabler-eye me-1"></i> Voir
+</a>
+
+
+      <!-- Lien pour éditer -->
+<a class="dropdown-item" href="{{ route('clients.edit', $client->id) }}" title="Modifier">
+  <i class="icon-base ti tabler-pencil me-1"></i> Edit
+</a>
+
+
+      <!-- Lien pour supprimer -->
+     <!-- Delete link triggering form submission -->
+<a class="dropdown-item text-red-600 hover:text-red-800" href="javascript:void(0);" 
+   onclick="event.preventDefault(); if(confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) document.getElementById('delete-form-{{ $client->id }}').submit();">
+  <i class="icon-base ti tabler-trash me-1"></i> Delete
+</a>
+
+<!-- Hidden form for delete -->
+<form id="delete-form-{{ $client->id }}" action="{{ route('deleteUser', $client->id) }}" method="POST" style="display: none;">
+  @csrf
+  @method('DELETE')
+</form>
+    </div>
+  </div>
+</td>
+
+
+
+
+
+
+
+
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 
-     <Style> /*général pour le bouton attractif */
-.btn-super-attractive {
-    background: linear-gradient(45deg,rgb(175, 172, 170),rgb(53, 51, 52)); /* Dégradé de couleurs */
-    color: white; /* Couleur du texte */
-    font-size: 16px; /* Taille du texte */
-    padding: 12px 24px; /* Espacement interne */
-    border: none; /* Pas de bordure */
-    border-radius: 50px; /* Coins arrondis */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Ombre douce */
-    cursor: pointer; /* Curseur pointeur */
-    transition: all 0.3s ease; /* Transition fluide */
-}
+                
+                </div>
+              </div>
+            </div>
 
-.btn-super-attractive:hover {
-    background: linear-gradient(45deg, rgb(175, 172, 170), rgb(53, 51, 52))); /* Inversion du dégradé */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Augmentation de l'ombre */
-    transform: scale(1.1); /* Zoom léger */
-}
+            <script>
+  function filterClients() {
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toLowerCase();
+    let table = document.querySelector(".table tbody");
+    let rows = table.getElementsByTagName("tr");
 
-.btn-super-attractive i {
-    margin-right: 10px; /* Espacement entre l'icône et le texte */
-    font-size: 20px; /* Taille de l'icône */
-}
+    Array.from(rows).forEach(function(row) {
+      let text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? "" : "none";
+    });
+  }
+</script>
 
-/* Overlay de la modale */
-/* Overlay de la modale */
-.modal-overlay {
-    display: none; /* Par défaut, la modale est masquée */
-    position: fixed; /* Position fixe sur l'écran */
-    top: 0;
-    left: 0;
-    width: 100%; /* Prend toute la largeur de l'écran */
-    height: 100%; /* Prend toute la hauteur de l'écran */
-    background: rgba(0, 0, 0, 0.9); /* Fond noir semi-transparent */
-    justify-content: center; /* Centrer horizontalement */
-    align-items: center; /* Centrer verticalement */
-    z-index: 1000; /* Position au-dessus des autres éléments */
-}
-
-/* Contenu de la modale */
-.modal-content {
-    background-color: transparent; /* Fond transparent pour intégrer les images directement */
-    width: 100%; /* Largeur pleine écran */
-    height: 100%; /* Hauteur pleine écran */
-    display: flex; /* Disposition flex */
-    flex-direction: column; /* Colonnes flexibles */
-    justify-content: center; /* Centrer verticalement */
-    align-items: center; /* Centrer horizontalement */
-    overflow: hidden; /* Supprime les débordements */
-    position: relative; /* Nécessaire pour le bouton de fermeture */
-}
-
-/* Grille des images */
-.modal-images {
-    display: grid; /* Disposition en grille */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Colonnes flexibles */
-    gap: 20px; /* Espacement entre les images */
-    width: 100%; /* Largeur complète */
-    height: 100%; /* Hauteur complète */
-    padding: 20px; /* Marges internes */
-    overflow-y: auto; /* Scroll vertical si besoin */
-}
-
-/* Images dans la modale */
-.modal-image {
-    width: 100%; /* Largeur complète de la colonne */
-    height: auto; /* Garde les proportions */
-    max-height: 80vh; /* Limite la hauteur à 80% de la fenêtre */
-    border-radius: 8px; /* Coins arrondis */
-    object-fit: cover; /* Remplir l'espace sans déformation */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Effets au survol */
-}
-
-.modal-image:hover {
-    transform: scale(1.05); /* Zoom léger */
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5); /* Ombre lumineuse au survol */
-}
-
-/* Bouton de fermeture */
-.close-btn {
-    position: absolute; /* Position absolue */
-    top: 20px; /* Décalage du haut */
-    right: 20px; /* Décalage de la droite */
-    background-color: red; /* Fond rouge */
-    color: white; /* Texte blanc */
-    border: none; /* Pas de bordure */
-    padding: 15px; /* Taille interne */
-    font-size: 24px; /* Taille du texte */
-    cursor: pointer; /* Curseur pointeur */
-    border-radius: 50%; /* Bouton circulaire */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre */
-    z-index: 1001; /* Par-dessus les images */
-    transition: transform 0.3s ease, background-color 0.3s ease; /* Transitions */
-}
-
-.close-btn:hover {
-    background-color: darkred; /* Rouge plus foncé au survol */
-    transform: scale(1.2); /* Zoom léger */
-}
-
-/* Ajout d'une animation d'apparition pour la modale */
-.modal-overlay.active {
-    display: flex; /* Affiche la modale (centrée) */
-    animation: fadeIn 0.4s ease; /* Animation d'apparition fluide */
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0; /* Départ transparent */
-    }
-    to {
-        opacity: 1; /* Apparition complète */
-    }
-}
-
-</style>
-
-    <script>
-        function openModal(clientId) {
-            // Ouvre la modale en affichant l'overlay
-            var modal = document.getElementById("modal" + clientId);
-            modal.style.display = "flex";
-        }
-
-        function closeModal(clientId) {
-            // Ferme la modale en masquant l'overlay
-            var modal = document.getElementById("modal" + clientId);
-            modal.style.display = "none";
-        }
-
-        // Ferme la modale si l'utilisateur clique en dehors de la modale
-        window.onclick = function(event) {
-            var modals = document.querySelectorAll('.modal-overlay');
-            modals.forEach(function(modal) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const highlightedRow = document.querySelector('tr.bg-green-100');
-            if (highlightedRow) {
-                highlightedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-    </script>
-
-    {{-- Pagination --}}
-    <div class="mt-4">
-    </div>
-</div>
 @endsection

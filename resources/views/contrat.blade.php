@@ -177,7 +177,7 @@
 
             <!-- Coordonnées en arabe à droite -->
             <div class="coordonnees arabe">
-                <p><strong>سيغما برايم</strong><br>تأجير السيارات<br>العنوان: شارع السلام، 1000 مدينة<br>هاتف: +33 1 23 45 67 89</p>
+                <p><strong>Sigma Prime</strong><br>Location de voitures<br>Adresse : Rue de la Paix, 1000 Ville<br>Tél : +33 1 23 45 67 89</p>
             </div>
         </header>
 

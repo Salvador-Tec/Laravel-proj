@@ -2,5 +2,22 @@
     "inter": {
         "normal": "C:\\Users\\DELL\\Desktop\\Projects\\Portfolio\\2_RealRentCar\\storage\\fonts\/inter_normal_4f95092608a03c140dccd33606c19f31",
         "bold": "inter_bold_8e796d6a87340143ae66c4104836364f"
+    },
+    "font awesome 6 brands": {
+        "normal": "font_awesome_6_brands_normal_31636509732b4298588040c87c3592c6"
+    },
+    "font awesome 6 free": {
+        "normal": "C:\\xampp\\htdocs\\car\\car\\storage\\fonts\/font_awesome_6_free_normal_1321bfcfa727e01fd6f51a5f5864a82b",
+        "900": "font_awesome_6_free_900_a4b7023c0a078a27002a27fd500f100e"
+    },
+    "font awesome 5 brands": {
+        "normal": "font_awesome_5_brands_normal_31636509732b4298588040c87c3592c6"
+    },
+    "font awesome 5 free": {
+        "900": "C:\\xampp\\htdocs\\car\\car\\storage\\fonts\/font_awesome_5_free_900_a4b7023c0a078a27002a27fd500f100e",
+        "normal": "font_awesome_5_free_normal_1321bfcfa727e01fd6f51a5f5864a82b"
+    },
+    "fontawesome": {
+        "normal": "fontawesome_normal_98ba43c5288785d68524e2de74fccc87"
     }
 }

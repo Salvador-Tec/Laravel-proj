@@ -8,30 +8,39 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up(): void
     {
-        Schema::create('cars', function (Blueprint $table) {
-            $table->id();
-            $table->string('brand');
-            $table->string('model');
-            $table->string('engine');
-            $table->decimal('price_per_day', 8, 2);
-            $table->string('image')->nullable();
-            $table->string('quantity');
-            $table->string('status')->default('available');
-            $table->integer('reduce');
-            $table->integer('stars');
+        // Vérifier si la table 'cars' n'existe pas
+        if (!Schema::hasTable('cars')) {
+            Schema::create('cars', function (Blueprint $table) {
+                $table->id();
+                $table->string('brand');
+                $table->string('model');
+                $table->string('engine');
+                $table->decimal('price_per_day', 8, 2);
+                $table->string('image')->nullable();
+                $table->string('quantity');
+                $table->string('status')->default('available');
+                $table->integer('reduce');
+                $table->integer('stars');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
     public function down(): void
     {
+        // Supprimer la table 'cars' si elle existe
         Schema::dropIfExists('cars');
     }
 };
+

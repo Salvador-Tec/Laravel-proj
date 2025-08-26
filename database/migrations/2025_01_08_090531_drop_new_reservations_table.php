@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up()
     {
-        // Supprime la table reservations
-        Schema::dropIfExists('reservations');
+        // Supprime la table reservations seulement si elle existe
+        if (Schema::hasTable('reservations')) {
+            Schema::dropIfExists('reservations');
+        }
     }
 
     /**
@@ -20,35 +22,37 @@ return new class extends Migration
      */
     public function down()
     {
-        // Récrée la table reservations
-        Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('car_id');
-            $table->string('first_name')->index();
-            $table->string('last_name')->index();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('nationality');
-            $table->string('identity_number');
-            $table->string('drivers_license_number');
-            $table->string('address');
-            $table->string('mobile_number');
-            $table->json('gallery')->nullable();
-            $table->time('delivery_time');
-            $table->time('return_time');
-            $table->integer('days');
-            $table->decimal('price_per_day', 8, 2);
-            $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['active', 'completed', 'canceled'])->default('active');
-            $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
-            $table->string('payment_method')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+        // Vérifie si la table n'existe pas avant de la créer
+        if (!Schema::hasTable('reservations')) {
+            Schema::create('reservations', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('car_id');
+                $table->string('first_name')->index();
+                $table->string('last_name')->index();
+                $table->date('start_date');
+                $table->date('end_date');
+                $table->string('nationality');
+                $table->string('identity_number');
+                $table->string('drivers_license_number');
+                $table->string('address');
+                $table->string('mobile_number');
+                $table->json('gallery')->nullable();
+                $table->time('delivery_time');
+                $table->time('return_time');
+                $table->integer('days');
+                $table->decimal('price_per_day', 8, 2);
+                $table->decimal('total_price', 10, 2);
+                $table->enum('status', ['active', 'completed', 'canceled'])->default('active');
+                $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
+                $table->string('payment_method')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
 
-            // Foreign key constraints
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
-        });
+                // Foreign key constraints
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
+            });
+        }
     }
 };
