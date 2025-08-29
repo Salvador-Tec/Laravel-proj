@@ -45,59 +45,50 @@ class CarController extends Controller
 
     public function availableCars(Request $request)
 {
-    // Récupérer les dates et heures de la requête
+    // Récupérer les dates et heures de la requête (attendues au format Y-m-d et H:i)
     $startDate = $request->input('start_date');
     $startTime = $request->input('delivery_time');
     $endDate = $request->input('end_date');
     $endTime = $request->input('return_time');
-    $gearbox = $request->input('gearbox_type'); // tableau ['automatique', 'manuelle']
-    $pickupLocation = $request->input('pickup_location'); // Lieu de prise en charge
-    $returnLocation = $request->input('return_location'); // Lieu de restitution
+    $gearbox = $request->input('gearbox_type');
+    $pickupLocation = $request->input('pickup_location');
+    $returnLocation = $request->input('return_location');
 
-
-    // Vérifier si les dates et heures sont valides
-    if ($startDate && $endDate && $startTime && $endTime) {
-        \Log::debug('Start Date: ' . $startDate);
-    \Log::debug('Start Time: ' . $startTime);
-    \Log::debug('End Date: ' . $endDate);
-    \Log::debug('End Time: ' . $endTime);
-        // Créer des objets Carbon pour la date et l'heure de début et de fin
-        try {
-            $startDateTime = Carbon::createFromFormat('d-m-Y H:i', "$startDate $startTime");
-            $endDateTime   = Carbon::createFromFormat('d-m-Y H:i', "$endDate $endTime");
-        } catch (\Exception $e) {
-            return redirect()->back()
-                             ->with('error', "Format de date/heure invalide : {$e->getMessage()}"); }                                                                
-
-        // Vérifier si la différence entre les deux dates et heures est inférieure à 2 jours
-        $duration = $startDateTime->diffInDays($endDateTime);
-
-        if ($duration < 2) {
-            return redirect()->back()->with('error', 'La durée minimale de réservation est de 2 jours.');
-        }
-    } else {
-        return redirect()->back()->with('error', 'Veuillez fournir des dates ou des marques valides.');
+    if (!($startDate && $endDate && $startTime && $endTime)) {
+        return redirect()->back()->with('error', 'Veuillez fournir les dates et heures de départ et de retour.');
     }
 
-    // Filtrer les voitures disponibles
-    $availableCars = Car::whereDoesntHave('reservations', function ($query) use ($startDate, $endDate, $startTime, $endTime) {
-        $query->whereIn('status', ['active', 'reserve']) // Appliquer le filtre de statut d'abord
-        ->where(function ($query) use ($startDate, $endDate, $startTime, $endTime) {
-            // Vérification du chevauchement des dates
-            $query->where('start_date', '<=', $endDate)
-                  ->where('end_date', '>=', $startDate);
-        })
-        // Vérification des chevauchements d'heures dans la même journée
-        ->orWhere(function ($query) use ($startDate, $startTime, $endTime) {
-            // Vérifier si la réservation est pour la même journée
-            $query->whereDate('start_date', '=', $startDate)
-                  ->whereDate('end_date', '=', $startDate)
-                  ->where(function ($query) use ($startTime, $endTime) {
-                      // Vérification des chevauchements horaires sur la même journée
-                      $query->whereRaw('TIME(delivery_time) < ?', [$endTime])
-                            ->whereRaw('TIME(return_time) > ?', [$startTime]);
-                  });
-        });
+    // Supporte formats 'Y-m-d' et 'd-m-Y' (datepicker home utilise dd-mm-yyyy)
+    $startDateRaw = str_replace('/', '-', $startDate);
+    $endDateRaw = str_replace('/', '-', $endDate);
+    $startDateTime = null;
+    $endDateTime = null;
+    try {
+        // Essai 1: d-m-Y
+        $startDateTime = Carbon::createFromFormat('d-m-Y H:i', "$startDateRaw $startTime");
+        $endDateTime   = Carbon::createFromFormat('d-m-Y H:i', "$endDateRaw $endTime");
+    } catch (\Exception $e1) {
+        try {
+            // Essai 2: Y-m-d
+            $startDateTime = Carbon::createFromFormat('Y-m-d H:i', "$startDateRaw $startTime");
+            $endDateTime   = Carbon::createFromFormat('Y-m-d H:i', "$endDateRaw $endTime");
+        } catch (\Exception $e2) {
+            return redirect()->back()->with('error', 'Format de date/heure invalide.');
+        }
+    }
+
+    if ($endDateTime <= $startDateTime) {
+        return redirect()->back()->with('error', 'La date de retour doit être après la date de départ.');
+    }
+
+    // Filtrer les voitures SANS réservation qui chevauche l’intervalle demandé
+    $availableCars = Car::whereDoesntHave('reservations', function ($query) use ($startDateTime, $endDateTime) {
+        $query->whereIn('status', ['active', 'reserve'])
+              ->where(function ($q) use ($startDateTime, $endDateTime) {
+                  // Overlap si: existing_start < new_end AND existing_end > new_start
+                  $q->whereRaw('CONCAT(start_date, " ", delivery_time) < ?', [$endDateTime->format('Y-m-d H:i:s')])
+                    ->whereRaw('CONCAT(end_date, " ", return_time) > ?', [$startDateTime->format('Y-m-d H:i:s')]);
+              });
     })
     ->when($gearbox, function ($query, $gearbox) {
         return $query->whereIn('gearbox_type', $gearbox);
@@ -110,11 +101,11 @@ class CarController extends Controller
     })
     ->get();
 
-    // Si aucune voiture n'est disponible, retourner avec un message flash
     if ($availableCars->isEmpty()) {
-        return redirect()->route('cars.available')->with('popup_message', 'Aucune voiture disponible pour la période sélectionnée.');
+        return view('cars.available', compact('availableCars'))
+            ->with('error', 'Aucune voiture disponible pour la période sélectionnée.');
     }
-    // Retourner la vue avec les voitures disponibles
+
     return view('cars.available', compact('availableCars'));
 }
 

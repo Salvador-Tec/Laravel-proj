@@ -222,7 +222,7 @@ function filterArrivalsByDate() {
 </li>
 
 <li class="menu-item">
-    <a href="javascript:void(0)" class="menu-link  flex items-center">
+    <a href="{{ route('reservations.actives') }}" class="menu-link  flex items-center">
         <i class="menu-icon icon-base">
             <!-- Icône de réservation (calendrier) SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" viewBox="0 0 24 24">

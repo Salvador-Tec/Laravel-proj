@@ -108,17 +108,8 @@ class LoginController extends Controller
             $client = Client::where('identity_number', $identityNumber)->first();
             $reservation = Reservation::where('identity_number', $identityNumber)->first();
     
-            // Si une réservation existe, retourner le formulaire d'édition
-            if ($reservation) {
-                return view('reservation.edit', [
-                    'client' => $client,
-                    'car' => $car, // Passe la voiture à la vue
-                    'identityNumber' => $identityNumber, // Passe le CIN à la vue
-                ]);
-            } else {
-                // Si aucune réservation n'existe, afficher le formulaire de création
-                return redirect()->route('reservations.create', ['car_id' => $car->id]);
-            }
+            // Quel que soit le cas (existant ou non), aller vers le formulaire de création pré-rempli
+            return redirect()->route('reservations.create', ['car_id' => $car->id]);
         } catch (\Exception $e) {
             return back()->withError('Une erreur est survenue. Veuillez réessayer plus tard.')->withInput();
         }

@@ -23,7 +23,7 @@
     <div style="color: white;">fhhhhh <br>kegkeke <br>555 <br>aaaa <br>2222</div>
 
     <div class="bg-gray-200 mx-auto max-w-screen-xl mt-40  p-3 rounded-md shadow-xl">
-        <form action="{{route('carSearch')}}" method="GET">
+        <form action="{{ route('cars.available') }}" method="GET">
             <div class="flex justify-center md:flex-row flex-col md:gap-28 gap-4">
                 <div class="flex justify-evenly md:flex-row flex-col md:gap-16 gap-2">
                     <input type="text" placeholder="Marque" name="brand"

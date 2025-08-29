@@ -3,17 +3,50 @@
 @section('create_reservation')
     <div class="mx-auto max-w-screen-x2 ">
         <div class="flex justify-between md:flex-row flex-col ">
-            @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+            @if (session('success') || session('error'))
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    function playBeep() {
+                        try {
+                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            oscillator.type = 'sine';
+                            oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.2, audioContext.currentTime + 0.01);
+                            oscillator.start();
+                            setTimeout(() => {
+                                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.2);
+                                oscillator.stop(audioContext.currentTime + 0.21);
+                            }, 180);
+                        } catch (e) { /* ignore */ }
+                    }
 
-@if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+
+                    @if (session('error'))
+                        playBeep();
+                        Toast.fire({ icon: "error", title: "{{ session('error') }}" });
+                    @endif
+                    @if (session('success'))
+                        Toast.fire({ icon: "success", title: "{{ session('success') }}" });
+                    @endif
+                });
+            </script>
+            @endif
             {{-- -------------------------------------------- left -------------------------------------------- --}}
             <div class="md:w-2/3  md:border-r border-gray-800 p-2 mt-8 ">
 
@@ -41,6 +74,10 @@
                 </div>
 
                 <div class="px-6 md:me-8">
+                    @php
+                        $prefill = isset($existingReservation) ? $existingReservation : (isset($client) ? $client : null);
+                        $formatDate = function($date) { return $date ? \Carbon\Carbon::parse(str_replace('/', '-', $date))->format('Y-m-d') : ''; };
+                    @endphp
                     <form action="{{ route('reservation.store', ['car_id' => $car->id]) }}" method="POST" enctype='multipart/form-data'>
 
                         @csrf
@@ -50,7 +87,7 @@
                             <div class="sm:col-span-3">
                                 <label for="first_name" class="block text-sm font-medium leading-6 text-gray-900">Nom</label>
                                 <div class="mt-2">
-                                    <input type="text" name="first_name" id="first_name"
+                                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $prefill->first_name ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('first_name')
@@ -62,7 +99,7 @@
                             <div class="sm:col-span-3">
                                 <label for="last_name" class="block text-sm font-medium leading-6 text-gray-900">Prénom</label>
                                 <div class="mt-2">
-                                    <input type="text" name="last_name" id="last_name"
+                                    <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $prefill->last_name ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('last_name')
@@ -73,7 +110,7 @@
                                 <div class="sm:col-span-3">
                                     <label for="date_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Date de naissance</label>
                                     <div class="mt-2">
-                                        <input type="date" name="date_of_birth" id="date_of_birth"
+                                        <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', isset($prefill) ? $formatDate($prefill->date_of_birth ?? null) : '') }}"
                                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                     </div>
                                     @error('date_of_birth')
@@ -115,7 +152,7 @@
                                 <div class="sm:col-span-3">
                                     <label for="place_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Lieu de naissance</label>
                                     <div class="mt-2">
-                                        <input type="text" name="place_of_birth" id="place_of_birth"
+                                        <input type="text" name="place_of_birth" id="place_of_birth" value="{{ old('place_of_birth', $prefill->place_of_birth ?? '') }}"
                                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                     </div>
                                     @error('place_of_birth')
@@ -130,7 +167,7 @@
                             <div class="sm:col-span-full">
                                 <label for="nationality" class="block text-sm font-medium leading-6 text-gray-900">Nationalité</label>
                                 <div class="mt-2">
-                                    <input type="text" name="nationality" id="nationality" value="{{ old('nationality') }}"
+                                    <input type="text" name="nationality" id="nationality" value="{{ old('nationality', $prefill->nationality ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('nationality')
@@ -142,7 +179,7 @@
                             <div class="sm:col-span-3">
                                 <label for="identity_number" class="block text-sm font-medium leading-6 text-gray-900">Numéro de carte d'identité</label>
                                 <div class="mt-2">
-                                    <input type="text" name="identity_number" id="identity_number" value="{{ old('identity_number', $identityNumber) }}"
+                                    <input type="text" name="identity_number" id="identity_number" value="{{ old('identity_number', $identityNumber ?? ($prefill->identity_number ?? '')) }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6" required>
                                 </div>
                                 @error('identity_number')
@@ -154,7 +191,7 @@
                                 <label for="identity_date" class="block text-sm font-medium leading-6 text-gray-900">Date d'identité</label>
                                 <div class="mt-2">
                                     <input type="date" name="identity_date" id="identity_date"
-                                        value=""
+                                        value="{{ old('identity_date', isset($prefill) ? $formatDate($prefill->identity_date ?? null) : '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                             </div>
@@ -165,7 +202,7 @@
                                 <label for="driver_license_number" class="block text-sm font-medium leading-6 text-gray-900">Numéro de permis de conduire</label>
                                 <div class="mt-2">
                                     <input type="text" name="driver_license_number" id="driver_license_number"
-                                        value="{{ old('driver_license_number') }}"
+                                        value="{{ old('driver_license_number', $prefill->driver_license_number ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('driver_license_number')
@@ -177,7 +214,7 @@
                                 <label for="license_date" class="block text-sm font-medium leading-6 text-gray-900">Date de permis</label>
                                 <div class="mt-2">
                                     <input type="date" name="license_date" id="license_date"
-                                        value=""
+                                        value="{{ old('license_date', isset($prefill) ? $formatDate($prefill->license_date ?? null) : '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                             </div>
@@ -186,7 +223,7 @@
                                 <label for="garantie" class="block text-sm font-medium leading-6 text-gray-900">Garantie</label>
                                 <div class="mt-2">
                                     <input type="text" name="garantie" id="garantie"
-                                        value=""
+                                        value="{{ old('garantie', isset($existingReservation) ? $existingReservation->garantie : '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                             </div>
@@ -196,7 +233,7 @@
                             <div class="sm:col-span-6">
                                 <label for="address" class="block text-sm font-medium leading-6 text-gray-900">Adresse</label>
                                 <div class="mt-2">
-                                    <input type="text" name="address" id="address" value="{{ old('address') }}"
+                                    <input type="text" name="address" id="address" value="{{ old('address', $prefill->address ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('address')
@@ -208,7 +245,7 @@
                             <div class="sm:col-span-full">
                                 <label for="mobile_number" class="block text-sm font-medium leading-6 text-gray-900">Numéro de téléphone</label>
                                 <div class="mt-2">
-                                    <input type="text" name="mobile_number" id="mobile_number" value="{{ old('mobile_number') }}"
+                                    <input type="text" name="mobile_number" id="mobile_number" value="{{ old('mobile_number', $prefill->mobile_number ?? '') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pr-400 sm:text-sm sm:leading-6">
                                 </div>
                                 @error('mobile_number')
@@ -622,39 +659,6 @@ function showForm() {
     });
 }
 
-function testShowForm() {
-    console.log('Test function called');
-    const driverForm = document.getElementById('driver-form');
-    if (driverForm) {
-        const testFormHtml = `
-            <div class="p-6 bg-gray-100 rounded-xl shadow-md text-gray-800 space-y-4">
-                <p class="text-lg font-semibold">Test Form - Client trouvé :</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block mb-1 text-green-600 font-medium">Nom</label>
-                        <input type="text" name="last_name_conducteur" value="Test Nom" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-green-600 font-medium">Prénom</label>
-                        <input type="text" name="first_name_conducteur" value="Test Prénom" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-green-600 font-medium">CIN</label>
-                        <input type="text" name="identity_number_conducteur" value="12345678" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-green-600 font-medium">Permis</label>
-                        <input type="text" name="driver_license_number_conducteur" value="ABC123" class="w-full bg-white border border-gray-300 rounded px-3 py-2">
-                    </div>
-                </div>
-            </div>
-        `;
-        driverForm.innerHTML = testFormHtml;
-        console.log('Test form loaded successfully');
-    } else {
-        console.error('driver-form element not found in test');
-    }
-}
 </script>
 <script>
     function toggleSecondDriverForm() {
@@ -903,29 +907,7 @@ function testShowForm() {
             </div>
         </div>
 
-        @if (session('error'))
-       
-        <script>
-            // Vérifie si un message d'erreur est présent dans la session
-            const Toast = Swal.mixin({
-                toast: true, // Le toast apparaîtra sous forme de pop-up
-                position: "top-end", // Position de l'alerte dans le coin supérieur droit
-                showConfirmButton: false, // Pas de bouton de confirmation
-                timer: 3000, // Le toast disparaît après 3 secondes
-                timerProgressBar: true, // Affiche la barre de progression
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer; // Arrêter la minuterie si l'utilisateur survole l'alerte
-                    toast.onmouseleave = Swal.resumeTimer; // Relancer la minuterie si l'utilisateur quitte l'alerte
-                }
-            });
-    
-            // Affiche le toast avec l'icône d'erreur et le message d'erreur
-            Toast.fire({
-                icon: "error", // Icône d'erreur
-                title: "{{ session('error') }}" // Message d'erreur récupéré de la session
-            });
-        </script>
-    @endif
+        
 
 
     </div>

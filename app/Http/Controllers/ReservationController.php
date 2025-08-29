@@ -52,12 +52,26 @@ class ReservationController extends Controller
                  if ($client) {
                      $existingReservation = Reservation::where('identity_number', $identityNumber)->first();
      
-                     // Si une réservation existe pour ce client, rediriger vers l'édition de réservation
+                     // Si une réservation existe pour ce client, afficher la page de création pré-remplie
                      if ($existingReservation) {
-                         return view('reservation.edit', [
-                             'reservation' => $existingReservation,
+                         // Récupérer les dates depuis la session pour pré-remplir
+                         $startRaw = session('start_date');
+                         $endRaw = session('end_date');
+                         $delivery_time = session('delivery_time');
+                         $return_time = session('return_time');
+                         $start_date = $startRaw ? Carbon::parse(str_replace('/', '-', $startRaw))->format('Y-m-d') : null;
+                         $end_date = $endRaw ? Carbon::parse(str_replace('/', '-', $endRaw))->format('Y-m-d') : null;
+
+                         return view('reservation.create', [
                              'car' => $car,
+                             'identityNumber' => $identityNumber,
                              'reservedDates' => $reservedDates,
+                             'start_date' => $start_date,
+                             'end_date' => $end_date,
+                             'delivery_time' => $delivery_time,
+                             'return_time' => $return_time,
+                             'client' => $client,
+                             'existingReservation' => $existingReservation,
                          ]);
                      }
                                  } else {
@@ -133,7 +147,7 @@ public function store(Request $request, $car_id)
             'address_conducteur' => 'nullable|string|max:255',
             'mobile_number_conducteur' => 'nullable|string|max:255',
             'gallery_conducteur' => 'nullable|array',
-            'gallery_conducteur.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'gallery_conducteur.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
 
             // Champs optionnels
             'numero_vol' => 'nullable|string|max:255',
@@ -827,7 +841,7 @@ public function verifierCode(Request $request)
 
 public function actives(Request $request)
 {
-    $query = \App\Models\Reservation::query();
+    $query = \App\Models\Reservation::where('status', 'active');
 
     if ($request->filled('matricule')) {
         $query->whereHas('car', function ($q) use ($request) {
@@ -846,9 +860,7 @@ public function actives(Request $request)
             $query->whereDate('end_date', $request->end_date);
         }
     }
-
-
-    $activeDepartures = $query->get();
+    $activeDepartures = $query->with('car')->orderBy('start_date', 'asc')->get();
 
     return view('admin.active_departures', ['activeDepartures' => $activeDepartures]);
 }

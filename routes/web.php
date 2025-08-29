@@ -178,14 +178,12 @@ Route::get('/cars/{car_id}/reserved-dates', [ReservationController::class, 'getR
 
 
 Route::get('/car-search', [CarController::class, 'filterCars'])->name('carSearch');
+// Unique route for available cars listing with date filtering
 Route::get('/cars/available', [CarController::class, 'availableCars'])->name('cars.available');
-Route::get('/cars/available', [CarController::class, 'filterCars'])->name('cars.available');
 
 
     Route::get('/search-cars', [CarController::class, 'searchCars']);
-    Route::get('/cars/available', [CarController::class, 'searchCars'])->name('cars.available');
     Route::get('/car/{id}/reserve', [CarController::class, 'reserve'])->name('car.reserve');
-    Route::get('/available-cars', [CarController::class, 'availableCars'])->name('cars.available');
 
     Route::get('/clients/search', [ClientController::class, 'searchClients'])->name('clients.search');
 
